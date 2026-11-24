@@ -22,6 +22,14 @@ describe('apiGet', () => {
     );
   });
 
+  it('n’envoie jamais de cookie et annonce la version de l’app', async () => {
+    const f = fakeFetch([{ id: 1 }]);
+    await apiGet({ path: '/x', schema, baseUrl: base, fetchImpl: f });
+    const init = (f as unknown as jest.Mock).mock.calls[0][1] as RequestInit;
+    expect(init.credentials).toBe('omit');
+    expect((init.headers as Record<string, string>)['X-App-Version']).toBeDefined();
+  });
+
   it('renvoie les données validées et les en-têtes', async () => {
     const r = await apiGet({ path: '/x', schema, baseUrl: base, fetchImpl: fakeFetch([{ id: 1 }]) });
     expect(r.data).toEqual([{ id: 1 }]);

@@ -51,6 +51,8 @@ export async function apiGet<S extends z.ZodType>(opts: RequestOptions<S>): Prom
     response = await doFetch(buildUrl(opts.baseUrl ?? apiBaseUrl(), opts.path, opts.query), {
       method: 'GET',
       headers: defaultHeaders(),
+      // Jamais de cookie : l'identité passe uniquement par le jeton (ADR-02), pas par une session web.
+      credentials: 'omit',
       signal: controller.signal,
     });
   } catch {

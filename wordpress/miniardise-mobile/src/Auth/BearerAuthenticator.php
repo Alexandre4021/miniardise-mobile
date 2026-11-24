@@ -19,7 +19,7 @@ final class BearerAuthenticator {
 
 	public function register(): void {
 		add_filter( 'determine_current_user', array( $this, 'determineCurrentUser' ), 20 );
-		add_filter( 'rest_authentication_errors', array( $this, 'authenticationErrors' ), 20 );
+		add_filter( 'rest_authentication_errors', array( $this, 'authenticationErrors' ), 110 );
 	}
 
 	/** @param int|false $userId */
@@ -35,8 +35,12 @@ final class BearerAuthenticator {
 		$id = $this->tokens->authenticate( $token );
 		if ( null === $id ) {
 			$this->invalidTokenPresented = true;
-			return $userId;
+			// Un jeton invalide ne doit pas laisser passer une session cookie éventuelle.
+			return 0;
 		}
+		// Le jeton prime : on neutralise l'authentification par cookie de WordPress pour cette requête,
+		// sinon rest_cookie_check_errors (cookie sans nonce) remettrait l'utilisateur à 0.
+		$GLOBALS['wp_rest_auth_cookie'] = false;
 		return $id;
 	}
 
@@ -48,7 +52,18 @@ final class BearerAuthenticator {
 	 * @return mixed
 	 */
 	public function authenticationErrors( $result ) {
-		if ( ! empty( $result ) || ! $this->invalidTokenPresented ) {
+		return self::decideAuthError( $result, $this->invalidTokenPresented );
+	}
+
+	/**
+	 * Un jeton invalide donne toujours une 401, même si une autre méthode (cookie) a répondu « true ».
+	 * Une erreur déjà levée par WordPress est conservée.
+	 *
+	 * @param mixed $result
+	 * @return mixed
+	 */
+	public static function decideAuthError( $result, bool $invalidTokenPresented ) {
+		if ( ! $invalidTokenPresented || $result instanceof \WP_Error ) {
 			return $result;
 		}
 		return new \WP_Error( 'mm_invalid_token', 'Session expirée.', array( 'status' => 401 ) );

@@ -28,4 +28,14 @@ final class BearerAuthenticatorTest extends TestCase {
 		self::assertFalse( BearerAuthenticator::isAppRoute( '/miniardise-mobile/v1x/' ) );
 		self::assertFalse( BearerAuthenticator::isAppRoute( '' ) );
 	}
+
+	public function test_invalid_token_always_yields_401_even_with_cookie_session(): void {
+		self::assertNull( BearerAuthenticator::decideAuthError( null, false ) );
+		self::assertTrue( BearerAuthenticator::decideAuthError( true, false ) );
+		$e = BearerAuthenticator::decideAuthError( true, true );
+		self::assertInstanceOf( \WP_Error::class, $e );
+		self::assertSame( 401, $e->get_error_data()['status'] );
+		$existing = new \WP_Error( 'x', 'y' );
+		self::assertSame( $existing, BearerAuthenticator::decideAuthError( $existing, true ) );
+	}
 }
