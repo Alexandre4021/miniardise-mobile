@@ -55,7 +55,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-secure-store',
     [
       'expo-splash-screen',
-      { backgroundColor: '#1E1A12', image: './assets/images/splash-icon.png', imageWidth: 180 },
+      { backgroundColor: '#FBF8F1', image: './assets/images/splash-icon.png', imageWidth: 168 },
     ],
   ],
   experiments: { typedRoutes: true, reactCompiler: true },

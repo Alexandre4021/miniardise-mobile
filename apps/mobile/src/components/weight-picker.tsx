@@ -31,10 +31,10 @@ export function WeightPicker({
             accessibilityState={{ selected: active, disabled: !v.in_stock }}
             accessibilityLabel={`${v.label}, ${euros(v.price)}${v.in_stock ? '' : ', épuisé'}`}
             style={[styles.pill, compact && styles.pillCompact, active && styles.active, !v.in_stock && styles.off]}>
-            <Text variant={compact ? 'caption' : 'bodyStrong'} color={active ? 'white' : 'ink'} style={[styles.label, !v.in_stock && styles.strike]}>
+            <Text variant={compact ? 'caption' : 'bodyStrong'} color={active ? 'goldText' : 'ink'} style={[styles.label, !v.in_stock && styles.strike]}>
               {v.label}
             </Text>
-            {!compact ? <Text variant="caption" color={active ? 'goldLight' : 'muted'}>{euros(v.price)}</Text> : null}
+            {!compact ? <Text variant="caption" color={active ? 'goldText' : 'muted'}>{euros(v.price)}</Text> : null}
           </Pressable>
         );
       })}
@@ -57,11 +57,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: colors.lineStrong,
-    backgroundColor: colors.cream,
+    borderColor: colors.line,
+    backgroundColor: colors.white,
   },
   pillCompact: { minHeight: 32, minWidth: 0, paddingHorizontal: 9, paddingVertical: 4, borderRadius: radius.pill },
-  active: { backgroundColor: colors.ink, borderColor: colors.ink },
+  // Sélection claire, aux couleurs du thème : fond sable doré, bordure or.
+  active: { backgroundColor: '#F1E2BD', borderColor: colors.gold2, borderWidth: 2 },
   off: { opacity: 0.45 },
   label: { fontWeight: '700' },
   strike: { textDecorationLine: 'line-through' },

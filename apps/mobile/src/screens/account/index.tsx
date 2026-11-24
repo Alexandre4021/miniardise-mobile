@@ -14,6 +14,7 @@ import { LoadingState } from '@/components/screen-state';
 import { Text } from '@/components/text';
 import { TextField } from '@/components/text-field';
 import { useAuth } from '@/features/auth/auth-context';
+import { useTabBarInset } from '@/hooks/use-tab-bar-inset';
 import { colors, radius, spacing, tapTarget } from '@/theme/tokens';
 
 export function AccountScreen() {
@@ -33,6 +34,7 @@ const loginSchema = z.object({
 
 function LoginForm() {
   const { login } = useAuth();
+  const tabInset = useTabBarInset();
   const [error, setError] = useState<string | null>(null);
   const { control, handleSubmit, formState } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -50,7 +52,7 @@ function LoginForm() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.form} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={[styles.form, { paddingBottom: spacing.xxl + tabInset }]} keyboardShouldPersistTaps="handled">
         <Text variant="display">Mon compte</Text>
         <Text color="muted">Connectez-vous avec le compte de la boutique en ligne pour retrouver vos commandes et vos adresses.</Text>
         <Controller
@@ -131,6 +133,7 @@ function MenuRow({ title, subtitle, icon, onPress }: { title: string; subtitle: 
 
 function AccountHome() {
   const { user, logout } = useAuth();
+  const tabInset = useTabBarInset();
   const [busy, setBusy] = useState(false);
   const confirmAll = () =>
     Alert.alert('Déconnecter tous mes appareils ?', 'Vous devrez vous reconnecter sur chaque téléphone.', [
@@ -139,7 +142,7 @@ function AccountHome() {
     ]);
 
   return (
-    <ScrollView contentContainerStyle={styles.form}>
+    <ScrollView contentContainerStyle={[styles.form, { paddingBottom: spacing.xxl + tabInset }]}>
       <View style={styles.hello}>
         <Text variant="caption" style={styles.kicker}>MON COMPTE</Text>
         <Text variant="display">Bonjour {user?.first_name || ''}</Text>

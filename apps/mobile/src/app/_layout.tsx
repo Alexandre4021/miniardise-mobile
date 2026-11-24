@@ -4,9 +4,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { ApiError } from '@/api/errors';
+import { LaunchAnimation } from '@/components/launch-animation';
 import { AuthProvider } from '@/features/auth/auth-context';
 import { colors } from '@/theme/tokens';
 
@@ -31,9 +32,10 @@ function makeQueryClient() {
 
 export default function RootLayout() {
   const [queryClient] = useState(makeQueryClient);
-  useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
+  const [intro, setIntro] = useState(true);
+  // L'écran de démarrage natif est masqué dès que l'animation est affichée (aucun flash).
+  const onIntroReady = useCallback(() => void SplashScreen.hideAsync(), []);
+  const onIntroDone = useCallback(() => setIntro(false), []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -54,6 +56,7 @@ export default function RootLayout() {
         <Stack.Screen name="commandes/[id]" options={{ title: 'Commande' }} />
         <Stack.Screen name="adresses" options={{ title: 'Mes adresses' }} />
       </Stack>
+      {intro ? <LaunchAnimation onReady={onIntroReady} onDone={onIntroDone} /> : null}
       </AuthProvider>
     </QueryClientProvider>
   );

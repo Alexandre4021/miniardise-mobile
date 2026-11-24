@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { userMessage } from '@/api/errors';
 import { fetchAddresses } from '@/api/mobile/account';
@@ -15,6 +15,7 @@ import { ErrorState, LoadingState } from '@/components/screen-state';
 import { Text } from '@/components/text';
 import { TextField } from '@/components/text-field';
 import { useAuth } from '@/features/auth/auth-context';
+import { useTabBarInset } from '@/hooks/use-tab-bar-inset';
 import {
   useApplyCoupon,
   useCart,
@@ -130,10 +131,11 @@ function CartFooter({ cart, refreshing }: { cart: Cart; refreshing: boolean }) {
 
 /** Barre de commande fixe au-dessus des onglets : total + bouton or, bien distincte du contenu. */
 function CheckoutBar({ cart }: { cart: Cart }) {
-  const insets = useSafeAreaInsets();
+  const tabInset = useTabBarInset();
   const t = cart.totals;
   return (
-    <View style={[styles.bar, { paddingBottom: spacing.sm + (Platform.OS === 'android' ? 0 : Math.min(insets.bottom, 8)) }]}>
+    // La barre est posée AU-DESSUS de la barre d'onglets (sinon masquée sur iOS).
+    <View style={[styles.bar, { marginBottom: tabInset }]}>
       <View>
         <Text variant="caption" color="muted">Total TTC</Text>
         <Text variant="title" color="goldText">{money(t.total_price, t)}</Text>
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm + 2,
+    paddingVertical: spacing.sm + 2,
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderTopColor: colors.lineStrong,

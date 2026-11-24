@@ -18,11 +18,12 @@ export type User = z.infer<typeof userSchema>;
 const authResponse = z.object({ tokens: tokensSchema, user: userSchema });
 
 export async function login(input: { login: string; password: string; device: string }) {
-  return (await apiRequest({ method: 'POST', path: `${NS}/auth/login`, schema: authResponse, body: input })).data;
+  return (await apiRequest({ method: 'POST', path: `${NS}/auth/login`, schema: authResponse, body: input, timeoutMs: 30_000 })).data;
 }
 
 export async function register(input: { email: string; password: string; first_name: string; last_name: string; device: string }) {
-  return (await apiRequest({ method: 'POST', path: `${NS}/auth/register`, schema: authResponse, body: input })).data;
+  // La création d'un client WooCommerce est lente (e-mails, extensions) : délai étendu.
+  return (await apiRequest({ method: 'POST', path: `${NS}/auth/register`, schema: authResponse, body: input, timeoutMs: 45_000 })).data;
 }
 
 /** null = refusé par le serveur (session terminée) ; exception = problème réseau. */

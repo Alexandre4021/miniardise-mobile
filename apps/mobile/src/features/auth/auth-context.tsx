@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import * as Device from 'expo-device';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { ApiError } from '@/api/errors';
 import { fetchMe } from '@/api/mobile/account';
 import { login as apiLogin, logout as apiLogout, register as apiRegister, type User } from '@/api/mobile/auth';
 import { cartTokenStore, session } from '@/features/bootstrap';
@@ -18,6 +19,29 @@ interface AuthValue {
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
+
+/**
+ * Inscription robuste : si la réponse se perd (réseau mobile, délai dépassé) alors que le compte
+ * a pu être créé côté serveur, on tente une connexion avec les mêmes identifiants avant d'afficher
+ * une erreur — évite le faux « échec » suivi d'un « compte déjà existant ».
+ */
+export async function registerOrRecover(
+  input: { email: string; password: string; first_name: string; last_name: string; device: string },
+  deps = { register: apiRegister, login: apiLogin },
+) {
+  try {
+    return await deps.register(input);
+  } catch (e) {
+    if (e instanceof ApiError && (e.code === 'timeout' || e.code === 'network')) {
+      try {
+        return await deps.login({ login: input.email, password: input.password, device: input.device });
+      } catch {
+        throw e;
+      }
+    }
+    throw e;
+  }
+}
 
 const deviceLabel = () => [Device.manufacturer, Device.modelName].filter(Boolean).join(' ').slice(0, 100) || 'Application mobile';
 
@@ -74,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       setUser,
       login: async (loginValue, password) => afterAuth(await apiLogin({ login: loginValue, password, device: deviceLabel() })),
-      register: async (input) => afterAuth(await apiRegister({ ...input, device: deviceLabel() })),
+      register: async (input) => afterAuth(await registerOrRecover({ ...input, device: deviceLabel() })),
       logout: async (all = false) => {
         await apiLogout(all).catch(() => undefined); // même hors ligne, on efface la session locale
         await session.clear();
