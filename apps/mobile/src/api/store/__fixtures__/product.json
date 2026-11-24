@@ -1,0 +1,21 @@
+{
+  "id": 6166, "name": "Mélange sportif", "slug": "melange-sportif", "parent": 0, "type": "variable", "variation": "",
+  "permalink": "https://epiceriefineminiardise.fr/produit/melange-sportif/", "sku": "M0001SPT",
+  "short_description": "<p>Mélange d’amandes, cranberries, raisins secs et graines de courge.</p>",
+  "description": "<p>Ingrédients : cranberries séchées, AMANDES.</p><p>Conservation&nbsp;: au sec.</p>",
+  "on_sale": false,
+  "prices": { "price": "490", "regular_price": "490", "sale_price": "490", "price_range": null, "currency_code": "EUR",
+    "currency_symbol": "€", "currency_minor_unit": 2, "currency_decimal_separator": ",", "currency_thousand_separator": " ",
+    "currency_prefix": "", "currency_suffix": " €" },
+  "average_rating": "0", "review_count": 0,
+  "images": [{ "id": 6195, "src": "https://epiceriefineminiardise.fr/wp-content/uploads/2026/11/melange-sportif.webp",
+    "thumbnail": "https://epiceriefineminiardise.fr/wp-content/uploads/2026/11/melange-sportif-600x600.webp",
+    "srcset": "", "sizes": "", "name": "Mélange sportif – 200 g", "alt": "Bol de mélange sportif" }],
+  "categories": [{ "id": 91, "name": "Mélange", "slug": "melange", "link": "https://epiceriefineminiardise.fr/categorie-produit/melange/" }],
+  "tags": [], "brands": [],
+  "attributes": [{ "id": 3, "name": "Poids", "taxonomy": "pa_poids", "has_variations": true,
+    "terms": [{ "id": 61, "name": "200 g", "slug": "200-g" }] }],
+  "variations": [{ "id": 6167, "attributes": [{ "name": "Poids", "value": "200-g" }] }],
+  "grouped_products": [], "has_options": true, "is_purchasable": true, "is_in_stock": true, "is_on_backorder": false,
+  "low_stock_remaining": null, "extensions": {}
+}

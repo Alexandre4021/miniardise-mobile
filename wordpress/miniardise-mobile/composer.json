@@ -1,0 +1,15 @@
+{
+  "name": "miniardise/miniardise-mobile",
+  "description": "API de l'application mobile Épicerie Fine MiniarDise (WordPress / WooCommerce).",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": { "php": ">=8.1" },
+  "require-dev": { "phpunit/phpunit": "^10.5" },
+  "autoload": { "psr-4": { "MiniarDise\\Mobile\\": "src/" } },
+  "autoload-dev": { "psr-4": { "MiniarDise\\Mobile\\Tests\\": "tests/" } },
+  "scripts": {
+    "test": "phpunit",
+    "lint": "find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
+  },
+  "config": { "sort-packages": true, "platform": { "php": "8.1.0" } }
+}

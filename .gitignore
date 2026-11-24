@@ -1,0 +1,33 @@
+# Dépendances / builds
+node_modules/
+vendor/
+dist/
+.expo/
+web-build/
+apps/mobile/ios/
+apps/mobile/android/
+*.zip
+
+# Secrets et données : NE JAMAIS VERSIONNER
+.env
+.env.*
+!.env.example
+wp-config.php
+*IDENTIFIANTS*
+*ACCES*
+*.sql
+*.sql.gz
+*.sqlite
+*.p8
+*.p12
+*.mobileprovision
+*.jks
+*.keystore
+google-services*.json
+GoogleService-Info.plist
+
+# Divers
+.DS_Store
+*.log
+coverage/
+.phpunit.cache/
