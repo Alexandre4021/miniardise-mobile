@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { userMessage } from '@/api/errors';
 import { fetchAddresses } from '@/api/mobile/account';
@@ -57,10 +57,12 @@ export function CartScreen() {
             ListHeaderComponent={<Text variant="title">Mon panier ({cart.data.items_count})</Text>}
             renderItem={({ item }) => <CartLine item={item} />}
             ListFooterComponent={<CartFooter cart={cart.data} refreshing={cart.isFetching} />}
+            contentInsetAdjustmentBehavior="automatic"
             refreshing={cart.isRefetching}
             onRefresh={() => void cart.refetch()}
             keyboardShouldPersistTaps="handled"
           />
+          <CheckoutBar cart={cart.data} />
         </KeyboardAvoidingView>
       )}
     </SafeAreaView>
@@ -122,10 +124,30 @@ function CartFooter({ cart, refreshing }: { cart: Cart; refreshing: boolean }) {
         <Text variant="caption" color="muted">dont TVA {money(t.total_tax, t)}{refreshing ? ' · mise à jour…' : ''}</Text>
       </View>
 
-      <Button title="Commander" onPress={() => undefined} disabled accessibilityHint="Le paiement dans l'application arrive bientôt" />
-      <Text variant="caption" color="muted" style={styles.center}>
-        Le paiement sécurisé dans l’application arrive très bientôt. Votre panier est conservé.
-      </Text>
+    </View>
+  );
+}
+
+/** Barre de commande fixe au-dessus des onglets : total + bouton or, bien distincte du contenu. */
+function CheckoutBar({ cart }: { cart: Cart }) {
+  const insets = useSafeAreaInsets();
+  const t = cart.totals;
+  return (
+    <View style={[styles.bar, { paddingBottom: spacing.sm + (Platform.OS === 'android' ? 0 : Math.min(insets.bottom, 8)) }]}>
+      <View>
+        <Text variant="caption" color="muted">Total TTC</Text>
+        <Text variant="title" color="goldText">{money(t.total_price, t)}</Text>
+      </View>
+      <Button
+        title="Commander"
+        style={styles.barBtn}
+        onPress={() =>
+          Alert.alert(
+            'Paiement bientôt disponible',
+            'Le paiement sécurisé dans l’application arrive très prochainement. Votre panier est conservé.',
+          )
+        }
+      />
     </View>
   );
 }
@@ -267,4 +289,20 @@ const styles = StyleSheet.create({
   totals: { backgroundColor: colors.champagne, borderRadius: radius.md, padding: spacing.md, gap: spacing.sm },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   sep: { height: 1, backgroundColor: colors.lineStrong },
+  bar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm + 2,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.lineStrong,
+    shadowColor: '#1E1A12',
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: -3 },
+    elevation: 8,
+  },
+  barBtn: { flex: 1 },
 });

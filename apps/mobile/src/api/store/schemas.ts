@@ -28,6 +28,16 @@ export const imageSchema = z.object({
   name: z.string(),
 });
 
+/** Déclinaison achetable (poids, prix TTC en centimes) — fournie par l'extension miniardise-mobile. */
+export const variationSchema = z.object({
+  id: z.number(),
+  label: z.string(),
+  price: z.number(),
+  in_stock: z.boolean(),
+  max: z.number().nullable(),
+});
+export type Variation = z.infer<typeof variationSchema>;
+
 export const productSchema = z.object({
   id: z.number().int().positive(),
   name: z.string(),
@@ -55,7 +65,14 @@ export const productSchema = z.object({
   is_purchasable: z.boolean(),
   is_in_stock: z.boolean(),
   low_stock_remaining: z.number().nullable(),
+  extensions: z
+    .object({ 'miniardise-mobile': z.object({ variations: z.array(variationSchema) }).optional() })
+    .optional(),
 });
+
+/** Déclinaisons d'un produit de la Store API (vide si l'extension n'est pas à jour). */
+export const productVariations = (p: { extensions?: { 'miniardise-mobile'?: { variations: Variation[] } } }) =>
+  p.extensions?.['miniardise-mobile']?.variations ?? [];
 
 export const productListSchema = z.array(productSchema);
 

@@ -1,9 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Button } from '@/components/button';
 
 import { Text } from '@/components/text';
 import { BRAND_TAGLINE, HERO_TITLE } from '@/theme/brand';
-import { colors, radius, spacing, tapTarget } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/theme/tokens';
 
 /** Bandeau d'accueil : dégradé crème → sable du site, accroche et appel à l'action (logo et nom : AppHeader). */
 export function Hero({ onShop }: { onShop: () => void }) {
@@ -17,12 +18,7 @@ export function Hero({ onShop }: { onShop: () => void }) {
       <Text variant="caption" style={styles.kicker}>DEPUIS 2020</Text>
       <Text style={styles.title} accessibilityRole="header">{HERO_TITLE}</Text>
       <Text color="ink2" style={styles.tagline}>{BRAND_TAGLINE}</Text>
-      <Pressable
-        onPress={onShop}
-        accessibilityRole="button"
-        style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}>
-        <Text variant="bodyStrong" color="white">Découvrir la boutique</Text>
-      </Pressable>
+      <Button title="Découvrir la boutique" onPress={onShop} style={styles.cta} />
     </LinearGradient>
   );
 }
@@ -50,14 +46,5 @@ const styles = StyleSheet.create({
   kicker: { color: colors.goldText, letterSpacing: 1.5 },
   title: { fontSize: 30, lineHeight: 36, fontWeight: '700', color: colors.goldText, textAlign: 'center' },
   tagline: { textAlign: 'center', maxWidth: 320 },
-  cta: {
-    marginTop: spacing.sm,
-    minHeight: tapTarget + 4,
-    paddingHorizontal: spacing.xl,
-    borderRadius: radius.pill,
-    backgroundColor: colors.ink,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ctaPressed: { backgroundColor: colors.ink2 },
+  cta: { marginTop: spacing.sm, paddingHorizontal: spacing.xl },
 });

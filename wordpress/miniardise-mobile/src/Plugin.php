@@ -7,6 +7,7 @@ namespace MiniarDise\Mobile;
 use MiniarDise\Mobile\Auth\BearerAuthenticator;
 use MiniarDise\Mobile\Auth\TokenService;
 use MiniarDise\Mobile\Auth\WpdbTokenRepository;
+use MiniarDise\Mobile\Catalog\StoreApiExtension;
 use MiniarDise\Mobile\Install\Schema;
 use MiniarDise\Mobile\Rest\AccountController;
 use MiniarDise\Mobile\Rest\AuthController;
@@ -44,6 +45,7 @@ final class Plugin {
 
 		( new BearerAuthenticator( $tokens ) )->register();
 		( new RecetteAppAccess() )->register();
+		StoreApiExtension::register();
 
 		add_action(
 			'rest_api_init',

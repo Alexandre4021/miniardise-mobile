@@ -6,13 +6,12 @@ import { LOGO } from '@/theme/assets';
 import { BRAND_NAME } from '@/theme/brand';
 import { colors, spacing } from '@/theme/tokens';
 
-/** En-tête des onglets : logo + nom de la boutique sur une ligne. */
-export function AppHeader({ right }: { right?: React.ReactNode }) {
+/** En-tête des onglets : logo + nom, centrés. */
+export function AppHeader() {
   return (
-    <View style={styles.bar} accessibilityRole="header">
-      <Image source={LOGO} style={styles.logo} contentFit="contain" accessibilityIgnoresInvertColors alt="" />
+    <View style={styles.bar} accessibilityRole="header" accessibilityLabel={BRAND_NAME}>
+      <Image source={LOGO} style={styles.logo} contentFit="contain" alt="" />
       <Text style={styles.name} numberOfLines={1}>{BRAND_NAME}</Text>
-      {right ? <View>{right}</View> : null}
     </View>
   );
 }
@@ -21,6 +20,7 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.sm + 2,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
@@ -29,5 +29,5 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.line,
   },
   logo: { width: 40, height: 40 },
-  name: { flex: 1, fontSize: 19, lineHeight: 24, fontWeight: '700', color: colors.goldText, letterSpacing: 0.2 },
+  name: { flexShrink: 1, fontSize: 19, lineHeight: 24, fontWeight: '700', color: colors.goldText, letterSpacing: 0.2 },
 });

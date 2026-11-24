@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
 import { apiRequest } from '@/api/client';
+import { variationSchema, type Variation } from '@/api/store/schemas';
+
+export type { Variation };
 
 const NS = '/wp-json/miniardise-mobile/v1';
 
@@ -32,13 +35,6 @@ export const sheetSchema = z.object({
   recycling: z.array(z.string()),
 });
 
-export const variationSchema = z.object({
-  id: z.number(),
-  label: z.string(),
-  price: z.number(),
-  in_stock: z.boolean(),
-  max: z.number().nullable(),
-});
 
 export const productDetailsSchema = z.object({
   id: z.number(),
@@ -50,7 +46,6 @@ export const productDetailsSchema = z.object({
 export type Review = z.infer<typeof reviewSchema>;
 export type ReviewsBlock = z.infer<typeof reviewsBlockSchema>;
 export type ProductSheet = z.infer<typeof sheetSchema>;
-export type Variation = z.infer<typeof variationSchema>;
 export type ProductDetails = z.infer<typeof productDetailsSchema>;
 
 export const fetchProductDetails = async (id: number, signal?: AbortSignal) =>

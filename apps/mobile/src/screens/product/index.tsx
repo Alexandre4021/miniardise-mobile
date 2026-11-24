@@ -13,10 +13,12 @@ import { ErrorState, LoadingState } from '@/components/screen-state';
 import { ICONS, SectionCard } from '@/components/section-card';
 import { Stars } from '@/components/stars';
 import { Text } from '@/components/text';
+import { WeightPicker } from '@/components/weight-picker';
+import { productVariations } from '@/api/store/schemas';
 import { productQuery } from '@/features/catalog/queries';
 import { useAddToCart } from '@/features/cart/use-cart';
 import { LOGO } from '@/theme/assets';
-import { colors, radius, spacing, tapTarget } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/theme/tokens';
 import { priceLabel } from '@/utils/format-price';
 import { decodeEntities, htmlToText } from '@/utils/html';
 import { euros } from '@/utils/money';
@@ -67,9 +69,10 @@ export function ProductDetail({ productRef }: { productRef: number | string }) {
 
           <BuyBox
             productId={p.id}
-            variations={details.data?.variations}
+            variations={details.data?.variations ?? (productVariations(p).length ? productVariations(p) : undefined)}
             fallbackPrice={priceLabel(p.prices)}
             inStock={p.is_in_stock}
+            isVariable={p.type === 'variable'}
             loadingVariations={details.isPending}
           />
 
@@ -136,12 +139,14 @@ function BuyBox({
   variations,
   fallbackPrice,
   inStock,
+  isVariable,
   loadingVariations,
 }: {
   productId: number;
   variations?: Variation[];
   fallbackPrice: string;
   inStock: boolean;
+  isVariable: boolean;
   loadingVariations: boolean;
 }) {
   const firstAvailable = variations?.find((v) => v.in_stock)?.id ?? null;
@@ -153,7 +158,9 @@ function BuyBox({
   const selectedId = chosen ?? firstAvailable;
   const selected = variations?.find((v) => v.id === selectedId) ?? null;
   const hasVariations = (variations?.length ?? 0) > 0;
-  const canBuy = hasVariations ? !!selected?.in_stock : inStock;
+  // Produit variable sans format publié : rien à ajouter au panier.
+  const noFormat = isVariable && !hasVariations && !loadingVariations;
+  const canBuy = hasVariations ? !!selected?.in_stock : inStock && !isVariable;
   const max = selected?.max ?? 99;
 
   const onAdd = () => {
@@ -174,32 +181,23 @@ function BuyBox({
       {hasVariations ? (
         <View style={styles.block}>
           <Text variant="bodyStrong">Poids</Text>
-          <View style={styles.weights} accessibilityRole="radiogroup">
-            {variations!.map((v) => {
-              const active = v.id === selectedId;
-              return (
-                <Pressable
-                  key={v.id}
-                  onPress={() => {
-                    setChosen(v.id);
-                    setQty(1);
-                    setAdded(false);
-                  }}
-                  disabled={!v.in_stock}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: active, disabled: !v.in_stock }}
-                  accessibilityLabel={`${v.label}, ${euros(v.price)}${v.in_stock ? '' : ', épuisé'}`}
-                  style={[styles.weight, active && styles.weightActive, !v.in_stock && styles.weightOff]}>
-                  <Text variant="bodyStrong" color={active ? 'white' : 'ink'} style={!v.in_stock && styles.strike}>{v.label}</Text>
-                  <Text variant="caption" color={active ? 'goldLight' : 'muted'}>{euros(v.price)}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          <WeightPicker
+            variations={variations!}
+            selectedId={selectedId}
+            onSelect={(id) => {
+              setChosen(id);
+              setQty(1);
+              setAdded(false);
+            }}
+          />
         </View>
-      ) : loadingVariations ? null : null}
+      ) : loadingVariations ? <Text variant="small" color="muted">Chargement des formats…</Text> : null}
 
-      <Text variant="small" color={canBuy ? 'success' : 'error'}>{canBuy ? 'En stock' : 'Épuisé'}</Text>
+      {loadingVariations && isVariable ? null : (
+        <Text variant="small" color={canBuy ? 'success' : 'error'}>
+          {canBuy ? 'En stock' : noFormat ? 'Indisponible pour le moment' : 'Épuisé'}
+        </Text>
+      )}
 
       <View style={styles.buyRow}>
         <QuantityStepper value={qty} onChange={setQty} max={max} disabled={!canBuy} />
@@ -357,22 +355,6 @@ const styles = StyleSheet.create({
   buy: { backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.line, padding: spacing.md, gap: spacing.sm + 2 },
   price: { fontSize: 30, lineHeight: 36 },
   block: { gap: spacing.sm },
-  weights: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  weight: {
-    minHeight: tapTarget + 8,
-    minWidth: 84,
-    paddingHorizontal: spacing.md,
-    paddingVertical: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: radius.sm,
-    borderWidth: 1,
-    borderColor: colors.lineStrong,
-    backgroundColor: colors.cream,
-  },
-  weightActive: { backgroundColor: colors.ink, borderColor: colors.ink },
-  weightOff: { opacity: 0.45 },
-  strike: { textDecorationLine: 'line-through' },
   buyRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   addBtn: { flex: 1 },
   added: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
