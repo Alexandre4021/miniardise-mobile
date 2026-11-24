@@ -63,13 +63,14 @@ export async function apiGet<S extends z.ZodType>(opts: RequestOptions<S>): Prom
     opts.signal?.removeEventListener('abort', onAbort);
   }
 
-  if (!response.ok) throw errorFromStatus(response.status);
-
   const contentType = response.headers.get('content-type') ?? '';
-  if (!contentType.includes('application/json')) {
-    // Page de défi anti-robots (Anubis) ou page d'erreur HTML de l'hébergeur.
-    throw new ApiError('blocked', 'Réponse non JSON', response.status);
+  const isJson = contentType.includes('application/json');
+  if (!isJson) {
+    // Page HTML : protection de la recette, défi anti-robots (Anubis) ou erreur de l'hébergeur.
+    // Jamais présentée comme une « session expirée ».
+    throw new ApiError('blocked', `Réponse non JSON (HTTP ${response.status})`, response.status);
   }
+  if (!response.ok) throw errorFromStatus(response.status);
 
   const parsed = opts.schema.safeParse(await response.json());
   if (!parsed.success) throw new ApiError('invalid_response', 'Format de réponse inattendu');

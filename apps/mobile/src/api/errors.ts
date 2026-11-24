@@ -4,6 +4,7 @@ export type ApiErrorCode =
   | 'blocked' // pare-feu / anti-robots de l'hébergeur
   | 'not_found'
   | 'unauthorized'
+  | 'forbidden'
   | 'rate_limited'
   | 'server'
   | 'invalid_response'
@@ -33,6 +34,8 @@ export function userMessage(error: unknown): string {
       return 'Cet élément est introuvable.';
     case 'unauthorized':
       return 'Votre session a expiré. Merci de vous reconnecter.';
+    case 'forbidden':
+      return 'Accès refusé par la boutique.';
     case 'rate_limited':
       return 'Trop de tentatives. Patientez un instant.';
     default:
@@ -41,7 +44,8 @@ export function userMessage(error: unknown): string {
 }
 
 export function errorFromStatus(status: number): ApiError {
-  if (status === 401 || status === 403) return new ApiError('unauthorized', `HTTP ${status}`, status);
+  if (status === 401) return new ApiError('unauthorized', 'HTTP 401', status);
+  if (status === 403) return new ApiError('forbidden', 'HTTP 403', status);
   if (status === 404) return new ApiError('not_found', 'HTTP 404', status);
   if (status === 406) return new ApiError('blocked', 'HTTP 406', status);
   if (status === 429) return new ApiError('rate_limited', 'HTTP 429', status);

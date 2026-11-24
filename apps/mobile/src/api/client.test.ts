@@ -46,7 +46,14 @@ describe('apiGet', () => {
     await expect(p).rejects.toMatchObject({ code: 'invalid_response' });
   });
 
+  it('page HTML 403 (protection de la recette) → blocked, pas « session expirée »', async () => {
+    const p = apiGet({ path: '/x', schema, baseUrl: base, fetchImpl: fakeFetch('<html>Site de test</html>', { status: 403, type: 'text/html' }) });
+    await expect(p).rejects.toMatchObject({ code: 'blocked', status: 403 });
+  });
+
   it.each([
+    [401, 'unauthorized'],
+    [403, 'forbidden'],
     [404, 'not_found'],
     [406, 'blocked'],
     [429, 'rate_limited'],
