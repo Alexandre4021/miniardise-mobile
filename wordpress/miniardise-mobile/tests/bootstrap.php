@@ -16,3 +16,12 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		public function get_error_data() { return $this->data; }
 	}
 }
+
+// Doublure minimale de WC_Order (propriété du client uniquement).
+if ( ! class_exists( 'WC_Order' ) ) {
+	// phpcs:ignore
+	class WC_Order {
+		public function __construct( private int $customerId = 0 ) {}
+		public function get_customer_id(): int { return $this->customerId; }
+	}
+}

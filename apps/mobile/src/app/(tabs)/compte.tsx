@@ -1,5 +1,5 @@
-import { Placeholder } from '@/screens/placeholder';
+import { AccountScreen } from '@/screens/account';
 
 export default function AccountRoute() {
-  return <Placeholder title="Mon compte" message="La connexion arrive avec l'extension miniardise-mobile (Phase 4b)." />;
+  return <AccountScreen />;
 }

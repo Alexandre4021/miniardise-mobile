@@ -15,6 +15,10 @@ export class ApiError extends Error {
     public readonly code: ApiErrorCode,
     message: string,
     public readonly status = 0,
+    /** Code renvoyé par le serveur (ex. mm_invalid_credentials, woocommerce_rest_cart_coupon_error). */
+    public readonly serverCode?: string,
+    /** Message du serveur, affichable s'il est destiné au client (WooCommerce, extension). */
+    public readonly serverMessage?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -24,6 +28,10 @@ export class ApiError extends Error {
 /** Message compréhensible par un client, sans détail technique. */
 export function userMessage(error: unknown): string {
   if (!(error instanceof ApiError)) return 'Une erreur inattendue est survenue.';
+  // Messages métier de WooCommerce / de l'extension (en français, sans détail technique).
+  if (error.serverMessage && error.serverCode && !error.serverCode.startsWith('rest_') && error.status >= 400 && error.status < 500) {
+    return stripTags(error.serverMessage);
+  }
   switch (error.code) {
     case 'network':
     case 'timeout':
@@ -51,4 +59,8 @@ export function errorFromStatus(status: number): ApiError {
   if (status === 429) return new ApiError('rate_limited', 'HTTP 429', status);
   if (status >= 500) return new ApiError('server', `HTTP ${status}`, status);
   return new ApiError('unknown', `HTTP ${status}`, status);
+}
+
+function stripTags(s: string): string {
+  return s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim();
 }

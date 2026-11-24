@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppHeader } from '@/components/app-header';
 import { CategoryTiles } from '@/components/category-tiles';
 import { Hero } from '@/components/hero';
+import { LatestReviews } from '@/components/latest-reviews';
 import { NewsCarousel } from '@/components/news-carousel';
 import { ProductGrid } from '@/components/product-grid';
 import { Reassurance } from '@/components/reassurance';
@@ -24,6 +25,7 @@ export function Home() {
         <CategoryTiles onSelect={goShop} />
       </View>
       <Reassurance />
+      <LatestReviews />
       <Text variant="title" style={styles.section}>Notre sélection</Text>
     </View>
   );

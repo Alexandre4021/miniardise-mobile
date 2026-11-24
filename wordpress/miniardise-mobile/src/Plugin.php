@@ -8,7 +8,9 @@ use MiniarDise\Mobile\Auth\BearerAuthenticator;
 use MiniarDise\Mobile\Auth\TokenService;
 use MiniarDise\Mobile\Auth\WpdbTokenRepository;
 use MiniarDise\Mobile\Install\Schema;
+use MiniarDise\Mobile\Rest\AccountController;
 use MiniarDise\Mobile\Rest\AuthController;
+use MiniarDise\Mobile\Rest\CatalogController;
 use MiniarDise\Mobile\Rest\ConfigController;
 use MiniarDise\Mobile\Rest\HomeController;
 use MiniarDise\Mobile\Security\RateLimiter;
@@ -49,6 +51,8 @@ final class Plugin {
 				( new ConfigController() )->register();
 				( new HomeController() )->register();
 				( new AuthController( $tokens, $limiter, $log ) )->register();
+				( new AccountController( $tokens, $limiter, $log ) )->register();
+				( new CatalogController() )->register();
 			}
 		);
 

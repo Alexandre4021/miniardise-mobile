@@ -1,5 +1,5 @@
-import { Placeholder } from '@/screens/placeholder';
+import { CartScreen } from '@/screens/cart';
 
 export default function CartRoute() {
-  return <Placeholder title="Panier" message="Le panier arrive à l'étape suivante (Phase 4a)." />;
+  return <CartScreen />;
 }

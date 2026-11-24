@@ -1,8 +1,10 @@
 import { NativeTabs } from 'expo-router/native-tabs';
 
+import { useCartCount } from '@/features/cart/use-cart';
 import { colors } from '@/theme/tokens';
 
 export default function TabsLayout() {
+  const count = useCartCount();
   return (
     <NativeTabs
       backgroundColor={colors.cream}
@@ -19,6 +21,7 @@ export default function TabsLayout() {
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="panier">
         <NativeTabs.Trigger.Label>Panier</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Badge hidden={count === 0}>{count > 99 ? '99+' : String(count)}</NativeTabs.Trigger.Badge>
         <NativeTabs.Trigger.Icon sf={{ default: 'cart', selected: 'cart.fill' }} md="shopping_cart" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="compte">
