@@ -36,7 +36,7 @@ final class AuthController {
 				'callback'            => array( $this, 'login' ),
 				'permission_callback' => '__return_true',
 				'args'                => array(
-					'email'    => array( 'type' => 'string', 'required' => true, 'format' => 'email', 'maxLength' => 254 ),
+					'login'    => array( 'type' => 'string', 'required' => true, 'minLength' => 1, 'maxLength' => 254 ), // e-mail ou identifiant
 					'password' => array( 'type' => 'string', 'required' => true, 'minLength' => 1, 'maxLength' => 256 ),
 					'device'   => array( 'type' => 'string', 'required' => false, 'maxLength' => 100 ),
 				),
@@ -69,9 +69,9 @@ final class AuthController {
 	/** @return \WP_REST_Response|\WP_Error */
 	public function login( \WP_REST_Request $req ) {
 		$ip    = ClientIp::from( $_SERVER );
-		$email = strtolower( trim( (string) $req->get_param( 'email' ) ) );
+		$login = strtolower( trim( (string) $req->get_param( 'login' ) ) );
 
-		foreach ( array( array( 'login_ip', $ip, 10 ), array( 'login_email', $email, 5 ) ) as [ $scope, $key, $limit ] ) {
+		foreach ( array( array( 'login_ip', $ip, 10 ), array( 'login_account', $login, 5 ) ) as [ $scope, $key, $limit ] ) {
 			$r = $this->limiter->attempt( $scope, $key, $limit, 900 );
 			if ( ! $r['allowed'] ) {
 				$this->log->record( SecurityLog::RATE_LIMITED, null, $ip, $scope );
@@ -79,7 +79,7 @@ final class AuthController {
 			}
 		}
 
-		$user = wp_authenticate( $email, (string) $req->get_param( 'password' ) );
+		$user = wp_authenticate( $login, (string) $req->get_param( 'password' ) );
 		if ( is_wp_error( $user ) || ! self::isCustomerAccount( $user ) ) {
 			$this->log->record( SecurityLog::LOGIN_FAILED, null, $ip );
 			// Même réponse que le compte existe ou non (anti-énumération).

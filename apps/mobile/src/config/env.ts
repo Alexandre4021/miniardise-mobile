@@ -36,3 +36,12 @@ export function apiBaseUrl(): string {
   cachedApiUrl ??= validateApiUrl(process.env.EXPO_PUBLIC_API_URL, appVariant);
   return cachedApiUrl;
 }
+
+/**
+ * Code d'accès de la recette (en-tête X-MO-Recette-Acces). Jamais envoyé par une app de
+ * production, même si la variable est définie par erreur.
+ */
+export function recetteAccessCode(variant: AppVariant = appVariant, raw = process.env.EXPO_PUBLIC_RECETTE_ACCESS): string | null {
+  if (variant === 'production' || !raw) return null;
+  return raw;
+}

@@ -1,4 +1,4 @@
-import { resolveVariant, validateApiUrl } from '@/config/env';
+import { recetteAccessCode, resolveVariant, validateApiUrl } from '@/config/env';
 
 describe('validateApiUrl', () => {
   it('accepte la recette en preview', () =>
@@ -12,4 +12,10 @@ describe('validateApiUrl', () => {
   it('autorise le WordPress local en HTTP en développement', () =>
     expect(validateApiUrl('http://localhost:8888', 'development')).toBe('http://localhost:8888'));
   it('variante inconnue → development', () => expect(resolveVariant('x')).toBe('development'));
+});
+
+describe('recetteAccessCode', () => {
+  it('jamais envoyé par une app de production', () => expect(recetteAccessCode('production', 'abc')).toBeNull());
+  it('envoyé en recette si défini', () => expect(recetteAccessCode('preview', 'abc')).toBe('abc'));
+  it('absent si non défini', () => expect(recetteAccessCode('development', undefined)).toBeNull());
 });

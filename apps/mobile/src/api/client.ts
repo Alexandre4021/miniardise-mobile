@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 
 import { ApiError, errorFromStatus } from '@/api/errors';
-import { apiBaseUrl, appVersion } from '@/config/env';
+import { apiBaseUrl, appVersion, recetteAccessCode } from '@/config/env';
 
 export interface RequestOptions<S extends z.ZodType> {
   path: string;
@@ -17,6 +17,13 @@ export interface RequestOptions<S extends z.ZodType> {
 export interface ApiResponse<T> {
   data: T;
   headers: Headers;
+}
+
+export function defaultHeaders(): Record<string, string> {
+  const headers: Record<string, string> = { Accept: 'application/json', 'X-App-Version': appVersion };
+  const recette = recetteAccessCode();
+  if (recette) headers['X-MO-Recette-Acces'] = recette;
+  return headers;
 }
 
 export function buildUrl(base: string, path: string, query?: RequestOptions<z.ZodType>['query']): string {
@@ -43,7 +50,7 @@ export async function apiGet<S extends z.ZodType>(opts: RequestOptions<S>): Prom
   try {
     response = await doFetch(buildUrl(opts.baseUrl ?? apiBaseUrl(), opts.path, opts.query), {
       method: 'GET',
-      headers: { Accept: 'application/json', 'X-App-Version': appVersion },
+      headers: defaultHeaders(),
       signal: controller.signal,
     });
   } catch {
