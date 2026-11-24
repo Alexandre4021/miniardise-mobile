@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { CategoryChips } from '@/components/category-chips';
+import { AppHeader } from '@/components/app-header';
+import { CategoryTiles } from '@/components/category-tiles';
 import { ProductGrid } from '@/components/product-grid';
 import { Text } from '@/components/text';
 import { useDebouncedValue } from '@/utils/use-debounced-value';
@@ -21,8 +22,9 @@ export function Shop({ initialCategory }: { initialCategory?: number }) {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      <AppHeader />
       <View style={styles.top}>
-        <Text variant="display">Boutique</Text>
+        <Text variant="title">Boutique</Text>
         <TextInput
           value={search}
           onChangeText={setSearch}
@@ -34,7 +36,7 @@ export function Shop({ initialCategory }: { initialCategory?: number }) {
           accessibilityLabel="Rechercher un produit"
           clearButtonMode="while-editing"
         />
-        <CategoryChips selected={category} onSelect={setCategory} />
+        <CategoryTiles withAll selected={category} onSelect={setCategory} />
       </View>
       <ProductGrid category={category} search={debounced.length >= 2 ? debounced : undefined} />
     </SafeAreaView>

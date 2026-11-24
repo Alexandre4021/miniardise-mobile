@@ -10,6 +10,7 @@ use MiniarDise\Mobile\Auth\WpdbTokenRepository;
 use MiniarDise\Mobile\Install\Schema;
 use MiniarDise\Mobile\Rest\AuthController;
 use MiniarDise\Mobile\Rest\ConfigController;
+use MiniarDise\Mobile\Rest\HomeController;
 use MiniarDise\Mobile\Security\RateLimiter;
 use MiniarDise\Mobile\Security\SecurityLog;
 use MiniarDise\Mobile\Security\WpdbRateLimitStore;
@@ -46,6 +47,7 @@ final class Plugin {
 			'rest_api_init',
 			static function () use ( $tokens, $limiter, $log ): void {
 				( new ConfigController() )->register();
+				( new HomeController() )->register();
 				( new AuthController( $tokens, $limiter, $log ) )->register();
 			}
 		);

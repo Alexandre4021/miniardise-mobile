@@ -1,13 +1,11 @@
-import { LOGO } from '@/theme/assets';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/text';
-import { BRAND_NAME, BRAND_TAGLINE } from '@/theme/brand';
+import { BRAND_TAGLINE, HERO_TITLE } from '@/theme/brand';
 import { colors, radius, spacing, tapTarget } from '@/theme/tokens';
 
-/** Bandeau d'accueil : dégradé crème → sable du site, logo, accroche et appel à l'action. */
+/** Bandeau d'accueil : dégradé crème → sable du site, accroche et appel à l'action (logo et nom : AppHeader). */
 export function Hero({ onShop }: { onShop: () => void }) {
   return (
     <LinearGradient
@@ -16,14 +14,8 @@ export function Hero({ onShop }: { onShop: () => void }) {
       end={{ x: 0.15, y: 1 }}
       style={styles.hero}>
       <View style={styles.glow} pointerEvents="none" />
-      <Image
-        source={LOGO}
-        style={styles.logo}
-        contentFit="contain"
-        accessibilityLabel={`Logo ${BRAND_NAME}`}
-      />
-      <Text variant="caption" style={styles.kicker}>DEPUIS 2020 · CORMEILLES-EN-PARISIS</Text>
-      <Text style={styles.title} accessibilityRole="header">{BRAND_NAME}</Text>
+      <Text variant="caption" style={styles.kicker}>DEPUIS 2020</Text>
+      <Text style={styles.title} accessibilityRole="header">{HERO_TITLE}</Text>
       <Text color="ink2" style={styles.tagline}>{BRAND_TAGLINE}</Text>
       <Pressable
         onPress={onShop}
@@ -55,7 +47,6 @@ const styles = StyleSheet.create({
     borderRadius: 170,
     backgroundColor: 'rgba(214,175,85,0.18)',
   },
-  logo: { width: 132, height: 132, marginBottom: spacing.xs },
   kicker: { color: colors.goldText, letterSpacing: 1.5 },
   title: { fontSize: 30, lineHeight: 36, fontWeight: '700', color: colors.goldText, textAlign: 'center' },
   tagline: { textAlign: 'center', maxWidth: 320 },

@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-import { fetchCategories, fetchProduct, fetchProducts } from '@/api/store/products';
+import { fetchCategories, fetchProduct, fetchProductBySlug, fetchProducts } from '@/api/store/products';
 
 const FIVE_MIN = 5 * 60_000;
 
@@ -8,7 +8,7 @@ export const catalogKeys = {
   all: ['catalog'] as const,
   categories: () => [...catalogKeys.all, 'categories'] as const,
   list: (f: { category?: number; search?: string }) => [...catalogKeys.all, 'list', f] as const,
-  product: (id: number) => [...catalogKeys.all, 'product', id] as const,
+  product: (ref: number | string) => [...catalogKeys.all, 'product', ref] as const,
 };
 
 export const categoriesQuery = () =>
@@ -27,9 +27,10 @@ export const productListQuery = (f: { category?: number; search?: string }) =>
     staleTime: FIVE_MIN, // prix et stock revalidés par le panier avant paiement
   });
 
-export const productQuery = (id: number) =>
+/** Produit par identifiant (nombre) ou par slug (lien du site). */
+export const productQuery = (ref: number | string) =>
   queryOptions({
-    queryKey: catalogKeys.product(id),
-    queryFn: ({ signal }) => fetchProduct(id, signal),
+    queryKey: catalogKeys.product(ref),
+    queryFn: ({ signal }) => (typeof ref === 'number' ? fetchProduct(ref, signal) : fetchProductBySlug(ref, signal)),
     staleTime: FIVE_MIN,
   });

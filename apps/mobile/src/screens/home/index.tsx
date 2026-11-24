@@ -2,8 +2,10 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppHeader } from '@/components/app-header';
 import { CategoryTiles } from '@/components/category-tiles';
 import { Hero } from '@/components/hero';
+import { NewsCarousel } from '@/components/news-carousel';
 import { ProductGrid } from '@/components/product-grid';
 import { Reassurance } from '@/components/reassurance';
 import { Text } from '@/components/text';
@@ -16,6 +18,7 @@ export function Home() {
   const header = (
     <View style={styles.header}>
       <Hero onShop={() => goShop()} />
+      <NewsCarousel />
       <View style={styles.section}>
         <Text variant="title">Nos fruits secs</Text>
         <CategoryTiles onSelect={goShop} />
@@ -27,6 +30,7 @@ export function Home() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      <AppHeader />
       <ProductGrid header={header} />
     </SafeAreaView>
   );

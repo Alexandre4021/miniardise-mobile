@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       MiniarDise Mobile
  * Description:       API sécurisée de l'application mobile Épicerie Fine MiniarDise (authentification, compte, commandes, points relais, paiement, notifications). Indépendante du thème.
- * Version:           0.1.2
+ * Version:           0.1.3
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Épicerie Fine MiniarDise
@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MM_VERSION', '0.1.2' );
+define( 'MM_VERSION', '0.1.3' );
 define( 'MM_DB_VERSION', '1' );
 define( 'MM_FILE', __FILE__ );
 

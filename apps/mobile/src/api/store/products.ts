@@ -1,4 +1,5 @@
 import { apiGet } from '@/api/client';
+import { ApiError } from '@/api/errors';
 import { categoryListSchema, productListSchema, productSchema } from '@/api/store/schemas';
 
 export const PRODUCTS_PER_PAGE = 20;
@@ -43,4 +44,15 @@ export async function fetchCategories(signal?: AbortSignal) {
   });
   // Catégories techniques héritées (« Non classé », poids) masquées côté app.
   return data.filter((c) => c.count > 0 && !/^(non class|\d+\s?(g|kg)$)/i.test(c.name));
+}
+
+export async function fetchProductBySlug(slug: string, signal?: AbortSignal) {
+  const { data } = await apiGet({
+    path: '/wp-json/wc/store/v1/products',
+    schema: productListSchema,
+    query: { slug, per_page: 1 },
+    signal,
+  });
+  if (!data[0]) throw new ApiError('not_found', 'Produit introuvable', 404);
+  return data[0];
 }

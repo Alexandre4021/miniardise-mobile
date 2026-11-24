@@ -12,9 +12,9 @@ import { colors, radius, spacing, tapTarget } from '@/theme/tokens';
 import { priceLabel } from '@/utils/format-price';
 import { decodeEntities, htmlToText } from '@/utils/html';
 
-export function ProductDetail({ id }: { id: number }) {
+export function ProductDetail({ productRef }: { productRef: number | string }) {
   const { width } = useWindowDimensions();
-  const q = useQuery(productQuery(id));
+  const q = useQuery(productQuery(productRef));
   const [weight, setWeight] = useState<string | null>(null);
 
   if (q.isPending) return <LoadingState />;

@@ -3,9 +3,11 @@ import { useLocalSearchParams } from 'expo-router';
 import { EmptyState } from '@/components/screen-state';
 import { ProductDetail } from '@/screens/product';
 
+/** /produit/123 (identifiant) ou /produit/melange-sportif (slug, liens du carrousel). */
 export default function ProductRoute() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const productId = Number(id);
-  if (!Number.isInteger(productId) || productId <= 0) return <EmptyState message="Produit introuvable." />;
-  return <ProductDetail id={productId} />;
+  const raw = String(id ?? '');
+  if (/^\d+$/.test(raw) && Number(raw) > 0) return <ProductDetail productRef={Number(raw)} />;
+  if (/^[a-z0-9-]{1,200}$/i.test(raw)) return <ProductDetail productRef={raw.toLowerCase()} />;
+  return <EmptyState message="Produit introuvable." />;
 }
