@@ -25,6 +25,7 @@ final class ConfigController {
 		$r     = new \WP_REST_Response(
 			array(
 				'api_version'        => 1,
+				'plugin_version'     => MM_VERSION,
 				'min_app_version'    => (string) get_option( 'mm_min_app_version', '0.1.0' ),
 				'maintenance'        => (bool) get_option( 'mm_maintenance', false ),
 				'privacy_policy_url' => get_privacy_policy_url(),

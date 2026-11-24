@@ -13,6 +13,7 @@ use MiniarDise\Mobile\Rest\ConfigController;
 use MiniarDise\Mobile\Security\RateLimiter;
 use MiniarDise\Mobile\Security\SecurityLog;
 use MiniarDise\Mobile\Security\WpdbRateLimitStore;
+use MiniarDise\Mobile\Staging\RecetteAppAccess;
 use MiniarDise\Mobile\Support\SystemClock;
 
 final class Plugin {
@@ -39,6 +40,7 @@ final class Plugin {
 		$log     = new SecurityLog( $wpdb );
 
 		( new BearerAuthenticator( $tokens ) )->register();
+		( new RecetteAppAccess() )->register();
 
 		add_action(
 			'rest_api_init',
