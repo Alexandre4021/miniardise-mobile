@@ -13,7 +13,7 @@ const nameSuffix: Record<Variant, string> = { development: ' (Dev)', preview: ' 
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: `MiniarDise${nameSuffix[variant]}`,
+  name: `Miniardise${nameSuffix[variant]}`,
   slug: 'miniardise',
   owner: undefined,
   version: '0.1.0',

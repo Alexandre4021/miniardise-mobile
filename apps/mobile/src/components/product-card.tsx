@@ -1,3 +1,4 @@
+import { LOGO } from '@/theme/assets';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -19,7 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
         accessibilityRole="link"
         accessibilityLabel={`${name}, ${price}${product.is_in_stock ? '' : ', épuisé'}`}>
         <Image
-          source={image ? { uri: image.thumbnail } : require('@/assets/images/logo-miniardise.png')}
+          source={image ? { uri: image.thumbnail } : LOGO}
           style={styles.image}
           contentFit={image ? 'cover' : 'contain'}
           transition={150}

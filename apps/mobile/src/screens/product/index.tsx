@@ -1,3 +1,4 @@
+import { LOGO } from '@/theme/assets';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
@@ -33,7 +34,7 @@ export function ProductDetail({ id }: { id: number }) {
           {(p.images.length ? p.images : [null]).map((img, i) => (
             <Image
               key={img?.id ?? i}
-              source={img ? { uri: img.src } : require('@/assets/images/logo-miniardise.png')}
+              source={img ? { uri: img.src } : LOGO}
               style={{ width, height: width, backgroundColor: colors.champagne }}
               contentFit={img ? 'cover' : 'contain'}
               alt={img?.alt ?? ''}
